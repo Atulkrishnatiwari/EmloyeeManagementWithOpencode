@@ -7,51 +7,44 @@ Monorepo containing the Employee Management API and the EmployeeApp mobile clien
 - `employee-management`: Node.js/Express API with REST + GraphQL and PostgreSQL
 - `EmployeeApp`: React Native mobile client for browsing and managing employees
 
-## Prerequisites
+## What You Can Do
+
+- Create, update, list, and delete employee records
+- Search and paginate employees via REST
+- Query and mutate employee data via GraphQL
+- Run the mobile app against REST or GraphQL from the same UI
+
+## Tech Stack
+
+- Backend: Node.js, Express, PostgreSQL, REST + GraphQL
+- Mobile: React Native (Android + iOS)
+- Tooling: npm scripts
+
+## Getting Started
+
+These are high-level steps. For full setup and exact commands, use:
+
+- `employee-management/README.md` for the backend API
+- `EmployeeApp/README.md` for the mobile app
+
+### Prerequisites
 
 - Node.js and npm
-- PostgreSQL
+- PostgreSQL (local or container)
 - Android Studio or Xcode (for mobile builds)
 - CocoaPods (for iOS)
 
-## Quick Start
+### Quick Start (Summary)
 
-### 1) Backend API
+Backend:
 
 ```bash
 cd employee-management
 npm install
-```
-
-Create `employee-management/.env` with your database settings:
-
-```bash
-PORT=4000
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=employee_db
-```
-
-Initialize the database (choose one):
-
-```bash
-createdb employee_db
-npm run migrate
-# or
-psql -d employee_db -f sql/create_employees.sql
-```
-
-Start the server:
-
-```bash
 npm run dev
 ```
 
-API defaults to `http://localhost:4000` unless overridden by `PORT`.
-
-### 2) Mobile App
+Mobile:
 
 ```bash
 cd EmployeeApp
@@ -59,7 +52,7 @@ npm install
 npm start
 ```
 
-In another terminal:
+In a second terminal:
 
 ```bash
 npm run android
@@ -67,27 +60,27 @@ npm run android
 npm run ios
 ```
 
-iOS setup (first run):
+### Example Environment File (Safe Sample)
+
+Create `employee-management/.env` with values that match your setup. Example only:
 
 ```bash
-bundle install
-bundle exec pod install
+PORT=4000
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=demo_user
+DB_PASSWORD=demo_password
+DB_NAME=employee_demo_db
 ```
 
-## API Configuration
+### Example Database Setup (Safe Sample)
 
-The mobile app base URL is set in `EmployeeApp/src/services/employeeApi.ts`. Make sure it matches the backend host and port you configured in `employee-management/.env`.
-
-Example (from the app):
-
-```ts
-const API_BASE_URL =
-  Platform.OS === 'android' ? 'http://10.0.2.2:5433' : 'http://localhost:5433';
+```bash
+createdb employee_demo_db
+npm run migrate
 ```
 
-For Android emulators, `10.0.2.2` maps to your local machine.
-
-## API Overview
+## API Overview (Examples)
 
 REST base path: `/employees`
 
@@ -95,17 +88,53 @@ REST base path: `/employees`
 - `GET /employees/:id`
 - `POST /employees`
 - `PUT /employees/:id`
-- `DELETE /employees`
 - `DELETE /employees/:id`
 
 GraphQL endpoint: `POST /graphql`
+
+Example GraphQL query:
+
+```graphql
+query Employees($limit: Int, $page: Int) {
+  employees(limit: $limit, page: $page) {
+    id
+    name
+    role
+    department
+  }
+}
+```
+
+## Mobile API Configuration
+
+The mobile app base URL is set in `EmployeeApp/src/services/employeeApi.ts`. Example only:
+
+```ts
+const API_BASE_URL =
+  Platform.OS === 'android' ? 'http://10.0.2.2:4000' : 'http://localhost:4000';
+```
+
+For Android emulators, `10.0.2.2` maps to your local machine.
+
+## Scripts (Common)
+
+Backend:
+
+- `npm run dev` start API in dev mode
+- `npm run migrate` apply database migrations
+
+Mobile:
+
+- `npm start` start Metro bundler
+- `npm run android` run Android app
+- `npm run ios` run iOS app
 
 ## Repo Structure
 
 - `employee-management/`: backend API
 - `EmployeeApp/`: mobile app
 
-## More Details
+## Notes
 
-- `employee-management/README.md` contains API setup, migrations, and examples
-- `EmployeeApp/README.md` contains mobile build instructions and scripts
+- This README uses example values only. Replace with your own local settings.
+- Do not commit real credentials or private infrastructure details.
